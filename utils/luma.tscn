@@ -1,0 +1,138 @@
+[gd_scene format=3 uid="uid://jy2g8t8r1xgr"]
+
+[ext_resource type="Script" uid="uid://dkr4w3geerq1r" path="res://script/player.gd" id="1_5xwo6"]
+[ext_resource type="Texture2D" uid="uid://da0xkqmaqyhi3" path="res://sprites/personagens_v2/luma/Ducking (32 x 32).png" id="2_5xwo6"]
+[ext_resource type="Texture2D" uid="uid://b3ghswebshl6i" path="res://sprites/personagens_v2/luma/Idle (32 x 32).png" id="3_85rfg"]
+[ext_resource type="Texture2D" uid="uid://diljuc871jsli" path="res://sprites/personagens_v2/luma/Jump (32 x 32).png" id="4_0ued1"]
+[ext_resource type="Texture2D" uid="uid://d1sipy5o3bc2s" path="res://sprites/personagens_v2/luma/Waddling (32 x 32).png" id="5_qy5b7"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_sqqda"]
+radius = 11.0
+height = 22.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lckjn"]
+atlas = ExtResource("2_5xwo6")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_koxjb"]
+atlas = ExtResource("3_85rfg")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tbgv5"]
+atlas = ExtResource("3_85rfg")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xv28q"]
+atlas = ExtResource("3_85rfg")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tmw02"]
+atlas = ExtResource("3_85rfg")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l0ite"]
+atlas = ExtResource("3_85rfg")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n6ay5"]
+atlas = ExtResource("4_0ued1")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ho5cj"]
+atlas = ExtResource("5_qy5b7")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g5y1i"]
+atlas = ExtResource("5_qy5b7")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_trbwm"]
+atlas = ExtResource("5_qy5b7")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p8lp7"]
+atlas = ExtResource("5_qy5b7")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eq6y8"]
+atlas = ExtResource("5_qy5b7")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tddeo"]
+atlas = ExtResource("5_qy5b7")
+region = Rect2(160, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_brpcj"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lckjn")
+}],
+"loop": 1,
+"name": &"duck",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_koxjb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tbgv5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xv28q")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tmw02")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l0ite")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n6ay5")
+}],
+"loop": 1,
+"name": &"jump",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ho5cj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g5y1i")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_trbwm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p8lp7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_eq6y8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tddeo")
+}],
+"loop": 1,
+"name": &"walk",
+"speed": 5.0
+}]
+
+[node name="CharacterBody2D" type="CharacterBody2D" unique_id=886786524 groups=["player"]]
+collision_layer = 2
+collision_mask = 9
+script = ExtResource("1_5xwo6")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1738622912]
+shape = SubResource("CapsuleShape2D_sqqda")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=559450995]
+position = Vector2(0, -4)
+sprite_frames = SubResource("SpriteFrames_brpcj")
+animation = &"idle"

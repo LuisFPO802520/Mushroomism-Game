@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://drt7idvmft4yf"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_sqqda"]
+animations = [{
+"frames": [],
+"loop": 1,
+"name": &"attack",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": 1,
+"name": &"death",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": 1,
+"name": &"hurt",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": 1,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": 1,
+"name": &"run",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sqqda"]
+size = Vector2(77, 39)
+
+[node name="CharacterBody2D" type="CharacterBody2D" unique_id=315927674]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=616034275]
+visible = false
+sprite_frames = SubResource("SpriteFrames_sqqda")
+animation = &"attack"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=577382954]
+
+[node name="Area2D" type="Area2D" parent="." unique_id=1455413256]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=469999536]
+position = Vector2(42, 15)
+shape = SubResource("RectangleShape2D_sqqda")
