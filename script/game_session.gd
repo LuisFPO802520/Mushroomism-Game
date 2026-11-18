@@ -9,6 +9,8 @@ var health: int = 5
 var max_health: int = 5
 var total_falls: int = 0
 var party_scenes: Array[String] = []
+var party_health: Dictionary = {}
+var _party_max_health: Dictionary = {}
 var current_level: String = ""
 var transitioning: bool = false
 var game_over: Control
@@ -65,6 +67,11 @@ func _restore_party(player: Node2D, level: Node) -> void:
 		var ally := packed.instantiate() as Node2D
 		level.add_child(ally)
 		ally.global_position = player.global_position
+		var saved_health: int = int(party_health.get(path, ally.get("max_health")))
+		ally.call("restore_health", saved_health)
+		if saved_health <= 0:
+			show_game_over.call_deferred(player, "%s perdeu todas as vidas." % path.get_file().get_basename().capitalize())
+			continue
 		ally.call("follow_player", player)
 
 
@@ -79,7 +86,26 @@ func _on_ally_rescued(ally: Node2D, _total: int) -> void:
 		var path: String = ally.call("get_party_scene_path")
 		if not path.is_empty() and path not in party_scenes:
 			party_scenes.append(path)
+		if not path.is_empty() and ally.has_signal("health_changed"):
+			party_health[path] = int(ally.get("health"))
+			_party_max_health[path] = int(ally.get("max_health"))
+			var receiver: Callable = _on_ally_health_changed.bind(ally)
+			if not ally.is_connected("health_changed", receiver):
+				ally.connect("health_changed", receiver)
 	_update_hud()
+
+
+func _on_ally_health_changed(current: int, maximum: int, ally: Node2D) -> void:
+	if not is_instance_valid(ally):
+		return
+	var path: String = ally.call("get_party_scene_path")
+	if path in party_scenes:
+		party_health[path] = current
+		_party_max_health[path] = maximum
+		if current <= 0:
+			# O respawn de Mush pode limpar a fila antes do aviso adiado do aliado.
+			var ally_name: String = path.get_file().get_basename().capitalize()
+			show_game_over.call_deferred(_player, "%s perdeu todas as vidas. Tente resgatar a equipe novamente." % ally_name)
 
 
 func _on_fell_into_hazard() -> void:
@@ -89,6 +115,9 @@ func _on_fell_into_hazard() -> void:
 func change_level(path: String) -> void:
 	if transitioning or is_instance_valid(game_over):
 		return
+	for ally_health: int in party_health.values():
+		if ally_health <= 0:
+			return
 	if not ResourceLoader.exists(path):
 		push_error("Mapa não encontrado: " + path)
 		return
@@ -128,6 +157,9 @@ func retry_level() -> void:
 	# Um retry recupera a equipe que entrou nesta fase. Os novos resgates
 	# feitos nela voltam aos seus locais para a tentativa seguinte.
 	party_scenes = _entry_party.duplicate()
+	party_health.clear()
+	for path: String in party_scenes:
+		party_health[path] = int(_party_max_health.get(path, 5))
 	health = max_health
 	total_falls = 0
 	_close_game_over()
@@ -138,6 +170,8 @@ func restart_journey() -> void:
 	if transitioning:
 		return
 	party_scenes.clear()
+	party_health.clear()
+	_party_max_health.clear()
 	_entry_party.clear()
 	health = max_health
 	total_falls = 0

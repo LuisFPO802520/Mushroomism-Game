@@ -87,6 +87,23 @@ func add_follower(position: Vector2) -> int:
 	return _followers.size() - 1
 
 
+## Recupera somente este aliado. Seu slot e os registros dos demais ficam iguais.
+func recover_follower(slot: int, position: Vector2) -> void:
+	if slot < 0 or slot >= _followers.size():
+		return
+	var follower: Dictionary = _followers[slot]
+	follower["entry_position"] = _last_position
+	follower["entry_distance"] = _distance
+	follower["cursor"] = _distance
+	follower["joined"] = false
+	follower["last_tick"] = -1
+	follower["output"] = {
+		"position": position, "velocity": Vector2.ZERO,
+		"facing_left": false, "grounded": true, "ducking": false,
+		"waiting": true, "joining": false,
+	}
+
+
 func sample(slot: int) -> Dictionary:
 	if slot < 0 or slot >= _followers.size():
 		return {}

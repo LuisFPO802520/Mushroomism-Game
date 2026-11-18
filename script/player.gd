@@ -28,8 +28,8 @@ enum PlayerState { walk, idle, jump, duck, attack, hurt, dead }
 
 @export_category("Ataque com galho")
 @export_range(1, 100) var attack_damage: int = 1
-@export var attack_size: Vector2 = Vector2(22.0, 22.0)
-@export var attack_offset: Vector2 = Vector2(17.0, -4.0)
+@export var attack_size: Vector2 = Vector2(44.0, 24.0)
+@export var attack_offset: Vector2 = Vector2(28.0, -4.0)
 @export_flags_2d_physics var attack_mask: int = 4
 ## Índices começam em zero: 3 e 4 são os quadros 4 e 5 do golpe.
 @export var attack_first_frame: int = 3
@@ -66,6 +66,7 @@ var _respawning: bool = false
 var _respawn_left: float = 0.0
 var _death_reason: String = "A luz de Mush se apagou."
 var _liquid_layers: Array[TileMapLayer] = []
+var _fall_shapes: Array[CollisionShape2D] = []
 var _flight_id: int = 0
 
 
@@ -161,8 +162,8 @@ func _read_movement() -> void:
 
 	var ducking: bool = Input.is_action_pressed("duck") and is_on_floor() and not _attacking
 	_set_ducking(ducking)
-	# O golpe firma o pé no chão; no ar ainda é possível controlar o salto.
-	velocity.x = direction * speed if not ducking and not (_attacking and is_on_floor()) else 0.0
+	# O golpe conserva sua direcao, mas andar e pular continuam livres.
+	velocity.x = direction * speed if not ducking else 0.0
 	if Input.is_action_just_pressed("jump") and not ducking:
 		# Cair de uma borda já consome o salto normal, restando o salto extra.
 		if not is_on_floor() and jump_count == 0:
@@ -438,19 +439,31 @@ func _cache_liquid_layers() -> void:
 		return
 	for node: Node in level.find_children("*", "TileMapLayer", true, false):
 		_liquid_layers.append(node as TileMapLayer)
+	for area: Node in level.find_children("*", "Area2D", true, false):
+		if area.name == &"Fall":
+			for shape: Node in area.find_children("*", "CollisionShape2D", true, false):
+				_fall_shapes.append(shape as CollisionShape2D)
 
 
 func _liquid_at_feet() -> String:
+	return get_liquid_at(self)
+
+
+## A mesma leitura de tiles atende Mush e os aliados, com a forma de cada um.
+func get_liquid_at(actor: CharacterBody2D) -> String:
 	# Lê os tiles que você já pintou: não cria nem move células do mapa.
 	# Em chão firme, água desenhada atrás do terreno não conta como uma queda.
-	if is_on_floor():
+	if actor.is_on_floor():
 		return ""
-	var foot_y: float = _standing_position.y + _standing_shape.get_rect().end.y - 2.0
+	var body_shape := actor.get_node_or_null("CollisionShape2D") as CollisionShape2D
+	if body_shape == null or body_shape.shape == null:
+		return ""
+	var foot_y: float = body_shape.position.y + body_shape.shape.get_rect().end.y - 2.0
 	for layer: TileMapLayer in _liquid_layers:
 		if not is_instance_valid(layer) or layer.tile_set == null or not layer.enabled:
 			continue
 		for offset_x: float in [-4.0, 0.0, 4.0]:
-			var point: Vector2 = global_position + Vector2(offset_x, foot_y)
+			var point: Vector2 = actor.global_position + Vector2(offset_x, foot_y)
 			var cell: Vector2i = layer.local_to_map(layer.to_local(point))
 			var source_id: int = layer.get_cell_source_id(cell)
 			if source_id < 0:
@@ -467,3 +480,57 @@ func _liquid_at_feet() -> String:
 			if "tropics_entities" in file and atlas in [Vector2i(12, 5), Vector2i(12, 6)]:
 				return "A água"
 	return ""
+
+
+func is_below_hazard_floor(actor: Node2D) -> bool:
+	for shape: CollisionShape2D in _fall_shapes:
+		if is_instance_valid(shape) and shape.shape != null and not shape.disabled:
+			var rectangle: Rect2 = shape.shape.get_rect()
+			var top: float = minf(shape.to_global(rectangle.position).y, shape.to_global(rectangle.end).y)
+			if actor.global_position.y >= top + 4.0:
+				return true
+	# Protecao para um aliado que cai fora da largura do sensor ou num mapa sem Fall.
+	return actor.global_position.y > maxf(global_position.y, _safe_position.y) + 256.0
+
+
+func recover_ally(ally: Node2D) -> void:
+	var slot: int = _allies.find(ally)
+	if slot < 0 or not is_instance_valid(ally) or is_dead():
+		return
+	if ally.has_method("is_dead") and bool(ally.call("is_dead")):
+		return
+	ally.global_position = _find_ally_recovery_position(ally)
+	_trail.recover_follower(slot, ally.global_position)
+	ally.call("finish_recovery")
+
+
+func _find_ally_recovery_position(ally: Node2D) -> Vector2:
+	var body_shape := ally.get_node("CollisionShape2D") as CollisionShape2D
+	var foot_y: float = body_shape.position.y + body_shape.shape.get_rect().end.y
+	var behind: float = 1.0 if anim.flip_h else -1.0
+	for offset_x: float in [behind * 24.0, -behind * 24.0, 0.0]:
+		var x: float = global_position.x + offset_x
+		var ray := PhysicsRayQueryParameters2D.create(
+			Vector2(x, global_position.y - 12.0),
+			Vector2(x, global_position.y + foot_y + 48.0), 1, [get_rid()])
+		var ground: Dictionary = get_world_2d().direct_space_state.intersect_ray(ray)
+		if ground.is_empty():
+			continue
+		var ground_position: Vector2 = ground["position"]
+		var candidate := Vector2(x, ground_position.y - foot_y - 0.1)
+		var query := PhysicsShapeQueryParameters2D.new()
+		query.shape = body_shape.shape
+		query.collision_mask = 1
+		query.transform = Transform2D(0.0, candidate + body_shape.position)
+		if get_world_2d().direct_space_state.intersect_shape(query, 1).is_empty():
+			return candidate
+	return _safe_position
+
+
+func on_ally_defeated(ally: Node2D) -> void:
+	if not is_instance_valid(ally) or ally not in _allies or is_dead():
+		return
+	if is_instance_valid(_session):
+		var path: String = ally.call("get_party_scene_path")
+		var ally_name: String = path.get_file().get_basename().capitalize()
+		_session.call("show_game_over", self, "%s perdeu todas as vidas. Tente resgatar a equipe novamente." % ally_name)

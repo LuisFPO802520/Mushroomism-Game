@@ -1,7 +1,16 @@
 extends CharacterBody2D
 
+signal health_changed(current_health: int, maximum_health: int)
+signal damaged(amount: int)
+signal died
+
 ## Vazio usa o caminho do prefab como identidade entre os mapas.
 @export var ally_id: StringName = &""
+@export_range(1, 100) var max_health: int = 5
+@export var invulnerability_time: float = 1.0
+@export var recovery_time: float = 0.25
+
+var health: int = 5
 
 var _player: Node2D
 var _slot: int = -1
@@ -14,6 +23,11 @@ var _takeoff_y: float = 0.0
 var _active_flight: int = -1
 var _active_jump: Dictionary = {}
 var _landings: Dictionary = {}
+var _invulnerability_left: float = 0.0
+var _reaction_left: float = 0.0
+var _recovering: bool = false
+var _health_was_restored: bool = false
+var _normal_modulate: Color = Color.WHITE
 
 ## Diferenca curta entre aliados em saltos parados; correndo, usam o ponto do salto.
 @export var jump_stagger: float = 0.06
@@ -24,14 +38,22 @@ func _ready() -> void:
 	remove_from_group("player")
 	add_to_group("allies")
 	_sprite = get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
+	if not _health_was_restored:
+		health = max_health
+	if _sprite != null:
+		_normal_modulate = _sprite.modulate
+		_prepare_hurt_animation()
 	# O corpo nao bloqueia nem empurra Mush; a Area2D so detecta o contato.
 	collision_layer = 0
 	collision_mask = 0
 	velocity = Vector2.ZERO
 	_create_rescue_area()
 	if _slot >= 0:
+		set_deferred("collision_layer", 16)
+		set_deferred("collision_mask", 1)
 		_set_rescue_monitoring(false)
 	_play("idle")
+	health_changed.emit(health, max_health)
 
 
 func get_ally_id() -> StringName:
@@ -51,7 +73,7 @@ func get_party_scene_path() -> String:
 ## Registro compartilhado pelo contato e pela restauracao do gerente.
 ## Nao reposiciona o aliado nem exige acesso a um autoload especifico.
 func follow_player(player: Node2D) -> bool:
-	if is_queued_for_deletion() or not is_instance_valid(player):
+	if is_dead() or is_queued_for_deletion() or not is_instance_valid(player):
 		return false
 	if not player.has_method("register_ally"):
 		return false
@@ -76,6 +98,8 @@ func follow_player(player: Node2D) -> bool:
 	if _player.has_signal("landed"):
 		_player.connect("landed", _on_player_landed)
 	# Colide com o terreno, mas nunca empurra Mush ou outro aliado.
+	# A camada 5 permite que apenas o sensor de dano encontre aliados resgatados.
+	set_deferred("collision_layer", 16)
 	set_deferred("collision_mask", 1)
 	add_to_group("rescued_allies")
 	_set_rescue_monitoring(false)
@@ -85,7 +109,7 @@ func follow_player(player: Node2D) -> bool:
 ## Use apos limpar os registros do player e reiniciar a trilha no respawn.
 ## Esta reposicao e explicita: ela nao faz parte do seguimento normal da fila.
 func reset_following(player: Node2D, spawn_position: Vector2) -> bool:
-	if is_queued_for_deletion() or not is_instance_valid(player):
+	if is_dead() or is_queued_for_deletion() or not is_instance_valid(player):
 		return false
 	if not player.has_method("register_ally"):
 		return false
@@ -150,6 +174,11 @@ func _on_body_entered(body: Node2D) -> void:
 
 func _physics_process(delta: float) -> void:
 	_clock += delta
+	_update_damage_reaction(delta)
+	if is_dead():
+		velocity = Vector2.ZERO
+		_play("hurt", "idle")
+		return
 	if _slot < 0 or not is_instance_valid(_player):
 		velocity = Vector2.ZERO
 		_play("idle")
@@ -158,6 +187,12 @@ func _physics_process(delta: float) -> void:
 		velocity = Vector2.ZERO
 		_jump_queue.clear()
 		_play("idle")
+		return
+	if _recovering:
+		velocity = Vector2.ZERO
+		_play("hurt", "idle")
+		return
+	if _check_hazards():
 		return
 	if not _player.has_method("get_follow_sample"):
 		return
@@ -176,6 +211,8 @@ func _physics_process(delta: float) -> void:
 	_apply_pending_jump(walking_speed)
 	_help_reach_landing(walking_speed, target.x, delta)
 	move_and_slide()
+	if _check_hazards():
+		return
 	if _sprite == null:
 		return
 	if absf(velocity.x) > 0.1:
@@ -203,6 +240,8 @@ func _disconnect_jump_signal() -> void:
 
 
 func _on_player_jumped(launch_position: Vector2, vertical_speed: float, horizontal_speed: float, jump_number: int, flight_id: int) -> void:
+	if is_dead() or _recovering:
+		return
 	_jump_queue.append({
 		"time": _clock,
 		"position": launch_position,
@@ -329,6 +368,130 @@ func _needs_launch_point(jump: Dictionary) -> bool:
 			return true
 	jump["precise_launch"] = false
 	return false
+
+
+func is_dead() -> bool:
+	return health <= 0
+
+
+## Usado pela sessao ao atravessar mapas. Recuperar a posicao nao cura o aliado.
+func restore_health(value: int) -> void:
+	health = clampi(value, 0, max_health)
+	_health_was_restored = true
+	health_changed.emit(health, max_health)
+
+
+func take_damage(amount: int, source_position: Vector2 = Vector2.INF) -> bool:
+	if not _can_receive_damage() or amount <= 0 or _invulnerability_left > 0.0:
+		return false
+	if _sprite != null and source_position.is_finite():
+		_sprite.flip_h = source_position.x < global_position.x
+	return _receive_damage(amount)
+
+
+## Uma queda nova nao e anulada pela invulnerabilidade contra golpes.
+func fall_into_hazard(_reason: String = "Água ou lava") -> bool:
+	if not _can_receive_damage():
+		return false
+	return _receive_damage(1)
+
+
+func _can_receive_damage() -> bool:
+	if is_dead() or _recovering or _slot < 0 or not is_instance_valid(_player):
+		return false
+	if _player.has_method("is_dead") and bool(_player.call("is_dead")):
+		return false
+	return true
+
+
+func _receive_damage(amount: int) -> bool:
+	# A trava vem antes dos sinais e do teleporte adiado: dois sensores no
+	# mesmo passo de fisica nao podem cobrar duas vidas pela mesma ocorrencia.
+	_recovering = true
+	_reaction_left = maxf(recovery_time, 0.05)
+	_invulnerability_left = maxf(invulnerability_time, 0.0)
+	health = maxi(0, health - amount)
+	velocity = Vector2.ZERO
+	_clear_air_motion()
+	_play("hurt", "idle")
+	health_changed.emit(health, max_health)
+	damaged.emit(amount)
+	if is_dead():
+		died.emit()
+		if _player.has_method("on_ally_defeated"):
+			_player.call_deferred("on_ally_defeated", self)
+	elif _player.has_method("recover_ally"):
+		_player.call_deferred("recover_ally", self)
+	return true
+
+
+## Player reposiciona/reajusta a trilha antes desta chamada. Mantem o slot,
+## a vida restante e a curta protecao que impede dano repetido no reaparecimento.
+func finish_recovery() -> void:
+	_clear_air_motion()
+	velocity = Vector2.ZERO
+	_takeoff_y = global_position.y
+	show()
+	if is_inside_tree():
+		reset_physics_interpolation()
+	if _slot >= 0 and not is_dead():
+		set_deferred("collision_layer", 16)
+		set_deferred("collision_mask", 1)
+
+
+func _clear_air_motion() -> void:
+	_jump_queue.clear()
+	_jump_lag = 0.0
+	_active_flight = -1
+	_active_jump.clear()
+	_landings.clear()
+
+
+func _update_damage_reaction(delta: float) -> void:
+	_invulnerability_left = maxf(0.0, _invulnerability_left - delta)
+	if _recovering and not is_dead():
+		_reaction_left = maxf(0.0, _reaction_left - delta)
+		if _reaction_left <= 0.0:
+			_recovering = false
+	if _sprite == null:
+		return
+	_sprite.modulate = _normal_modulate
+	if _invulnerability_left > 0.0 and not is_dead():
+		_sprite.modulate.a *= 0.35 if int(_invulnerability_left * 12.0) % 2 == 0 else 1.0
+
+
+func _check_hazards() -> bool:
+	if _player.has_method("get_liquid_at"):
+		var liquid: String = _player.call("get_liquid_at", self)
+		if not liquid.is_empty():
+			return fall_into_hazard(liquid)
+	if _player.has_method("is_below_hazard_floor") and bool(_player.call("is_below_hazard_floor", self)):
+		return fall_into_hazard()
+	return false
+
+
+func _prepare_hurt_animation() -> void:
+	if _sprite.sprite_frames == null:
+		return
+	_sprite.sprite_frames = _sprite.sprite_frames.duplicate() as SpriteFrames
+	if _sprite.sprite_frames.has_animation(&"hurt"):
+		_sprite.sprite_frames.set_animation_loop(&"hurt", false)
+		return
+	var character: String = scene_file_path.get_file().get_basename().to_lower()
+	var path: String = "res://sprites/personagens_v2/%s/Hurt (32 x 32).png" % character
+	if not ResourceLoader.exists(path):
+		return
+	var texture := load(path) as Texture2D
+	if texture == null:
+		return
+	_sprite.sprite_frames.add_animation(&"hurt")
+	_sprite.sprite_frames.set_animation_loop(&"hurt", false)
+	_sprite.sprite_frames.set_animation_speed(&"hurt", 8.0)
+	for column in range(texture.get_width() / 32):
+		var frame := AtlasTexture.new()
+		frame.atlas = texture
+		frame.region = Rect2(column * 32, 0, 32, 32)
+		_sprite.sprite_frames.add_frame(&"hurt", frame)
 
 
 func _play(animation: StringName, fallback: StringName = &"idle", last_fallback: StringName = &"idle") -> void:
