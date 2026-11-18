@@ -10,6 +10,7 @@ var alvo: Node2D
 
 
 func _ready() -> void:
+	add_to_group("player_camera")
 	buscar_alvo()
 	if alvo != null:
 		# Sem isto a câmera faz um voo desde a origem no primeiro quadro.

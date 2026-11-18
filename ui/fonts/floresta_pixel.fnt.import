@@ -1,0 +1,17 @@
+[remap]
+
+importer="font_data_bmfont"
+type="FontFile"
+uid="uid://omsosqpr13vl"
+path="res://.godot/imported/floresta_pixel.fnt-e324c668277a256750d64286d8944cfe.fontdata"
+
+[deps]
+
+source_file="res://ui/fonts/floresta_pixel.fnt"
+dest_files=["res://.godot/imported/floresta_pixel.fnt-e324c668277a256750d64286d8944cfe.fontdata"]
+
+[params]
+
+fallbacks=[]
+compress=true
+scaling_mode=2

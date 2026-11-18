@@ -3,15 +3,53 @@
 [ext_resource type="Script" uid="uid://dkr4w3geerq1r" path="res://script/player.gd" id="1_apvwa"]
 [ext_resource type="Texture2D" uid="uid://b7i3hjkxnvt3h" path="res://sprites/personagens_v2/mush/Ducking (32 x 32).png" id="2_osg3b"]
 [ext_resource type="Texture2D" uid="uid://dhf4f1mqx0pn" path="res://sprites/personagens_v2/mush/Idle (32 x 32).png" id="3_1osbx"]
+[ext_resource type="Texture2D" uid="uid://dw8pysk6aq0b1" path="res://sprites/personagens_v2/mush/Hurt (32 x 32).png" id="4_1osbx"]
 [ext_resource type="Texture2D" uid="uid://50lhwc5emoc7" path="res://sprites/personagens_v2/mush/Jump (32 x 32).png" id="4_73fti"]
 [ext_resource type="Texture2D" uid="uid://vhitpnuonmq0" path="res://sprites/personagens_v2/mush/Waddling (32 x 32).png" id="5_67ad4"]
+[ext_resource type="Texture2D" uid="uid://dnwsfea0816vy" path="res://sprites/personagens_v2/mush/Attack (32 x 32).png" id="5_osg3b"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_sqqda"]
 radius = 11.0
 height = 22.0
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_1osbx"]
+atlas = ExtResource("5_osg3b")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_73fti"]
+atlas = ExtResource("5_osg3b")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_67ad4"]
+atlas = ExtResource("5_osg3b")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_brpcj"]
+atlas = ExtResource("5_osg3b")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_53wlo"]
+atlas = ExtResource("5_osg3b")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bp366"]
+atlas = ExtResource("5_osg3b")
+region = Rect2(160, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6ikds"]
+atlas = ExtResource("5_osg3b")
+region = Rect2(192, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xo1rn"]
+atlas = ExtResource("5_osg3b")
+region = Rect2(224, 0, 32, 32)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_gpeen"]
 atlas = ExtResource("2_osg3b")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eo8xk"]
+atlas = ExtResource("4_1osbx")
 region = Rect2(0, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_irmvp"]
@@ -66,10 +104,47 @@ region = Rect2(160, 0, 32, 32)
 animations = [{
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_1osbx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_73fti")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_67ad4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_brpcj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_53wlo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bp366")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6ikds")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xo1rn")
+}],
+"loop": 1,
+"name": &"attack",
+"speed": 18.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_gpeen")
 }],
 "loop": 1,
 "name": &"duck",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_eo8xk")
+}],
+"loop": 1,
+"name": &"hurt",
 "speed": 5.0
 }, {
 "frames": [{
@@ -135,4 +210,5 @@ shape = SubResource("CapsuleShape2D_sqqda")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=559450995]
 position = Vector2(0, -4)
 sprite_frames = SubResource("SpriteFrames_brpcj")
-animation = &"walk"
+animation = &"hurt"
+frame_progress = 0.43879065

@@ -1,0 +1,27 @@
+{
+  "cell_size": [32, 32],
+  "scope": "sprites_only",
+  "mush": {
+    "path": "sprites/personagens_v2/mush/Attack (32 x 32).png",
+    "frames": 8,
+    "fps": 16,
+    "loop": false,
+    "impact_frames_1based": [4, 5],
+    "head_offsets": [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
+  },
+  "enemy": {
+    "name": "Esporim",
+    "atlas": "esporim_atlas_32.png",
+    "atlas_size": [192,224],
+    "columns": 6,
+    "states": [
+      {"name":"Idle","godot":"idle","frames":4,"fps":5,"loop":true,"head_offsets":[[0,0],[0,0],[0,-1],[0,0]]},
+      {"name":"Run","godot":"run","frames":6,"fps":8,"loop":true,"head_offsets":[[0,0],[0,-1],[0,0],[0,0],[0,-1],[0,0]]},
+      {"name":"Jump","godot":"jump","frames":1,"fps":1,"loop":false,"head_offsets":[[0,-1]]},
+      {"name":"Falling","godot":"fall","frames":1,"fps":1,"loop":false,"head_offsets":[[0,-1]]},
+      {"name":"Attack","godot":"attack","frames":6,"fps":12,"loop":false,"impact_frames_1based":[3,4],"head_offsets":[[0,0],[-1,0],[0,-1],[1,0],[1,0],[0,0]]},
+      {"name":"Hurt","godot":"hurt","frames":2,"fps":8,"loop":false,"expression_changes":true,"head_offsets":[[-1,0],[-1,1]]},
+      {"name":"Death","godot":"death","frames":4,"fps":8,"loop":false,"disintegration":true,"head_offsets":[[0,0],[0,1],[0,2],null]}
+    ]
+  }
+}
