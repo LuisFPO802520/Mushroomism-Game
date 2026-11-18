@@ -1,0 +1,500 @@
+[gd_scene load_steps=18 format=3]
+
+[ext_resource type="Script" path="res://script/victory.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://sprites/floresta_cogumelos/parallax/5_nevoa_fundo.png" id="2_fog"]
+[ext_resource type="Texture2D" path="res://sprites/floresta_cogumelos/parallax/4_floresta_distante.png" id="3_forest"]
+[ext_resource type="Texture2D" path="res://sprites/floresta_cogumelos/parallax/2_cogumelos_luminosos.png" id="4_mushrooms"]
+[ext_resource type="Texture2D" path="res://sprites/floresta_cogumelos/parallax/1_vegetacao_proxima.png" id="5_leaves"]
+[ext_resource type="Texture2D" path="res://sprites/personagens_v2/mush/Victory_Dance (32 x 32).png" id="6_mush"]
+
+[ext_resource type="FontFile" path="res://ui/fonts/floresta_pixel.fnt" id="7_pixel_font"]
+
+[sub_resource type="AtlasTexture" id="Atlas_mush_victory"]
+resource_local_to_scene = true
+atlas = ExtResource("6_mush")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="StyleBoxFlat" id="Style_panel"]
+content_margin_left = 10.0
+content_margin_top = 8.0
+content_margin_right = 10.0
+content_margin_bottom = 8.0
+bg_color = Color(0.025, 0.09, 0.11, 0.96)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.75, 0.91, 0.55, 1)
+shadow_color = Color(0.06, 0.015, 0.15, 0.65)
+shadow_size = 0
+
+anti_aliasing = false
+[sub_resource type="StyleBoxFlat" id="Style_stat"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.055, 0.095, 0.155, 1)
+
+anti_aliasing = false
+[sub_resource type="StyleBoxFlat" id="Style_button"]
+content_margin_left = 6.0
+content_margin_top = 4.0
+content_margin_right = 6.0
+content_margin_bottom = 4.0
+bg_color = Color(0.06, 0.18, 0.23, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.3, 0.7, 0.75, 1)
+
+anti_aliasing = false
+[sub_resource type="StyleBoxFlat" id="Style_hover"]
+content_margin_left = 6.0
+content_margin_top = 4.0
+content_margin_right = 6.0
+content_margin_bottom = 4.0
+bg_color = Color(0.09, 0.28, 0.34, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.59, 1, 0.95, 1)
+
+anti_aliasing = false
+[sub_resource type="StyleBoxFlat" id="Style_pressed"]
+content_margin_left = 6.0
+content_margin_top = 4.0
+content_margin_right = 6.0
+content_margin_bottom = 4.0
+bg_color = Color(0.035, 0.12, 0.18, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.55, 0.73, 1, 1)
+
+anti_aliasing = false
+[sub_resource type="StyleBoxFlat" id="Style_focus"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.66, 0.98, 0.94, 1)
+
+anti_aliasing = false
+[sub_resource type="StyleBoxFlat" id="Style_disabled"]
+content_margin_left = 6.0
+content_margin_top = 4.0
+content_margin_right = 6.0
+content_margin_bottom = 4.0
+bg_color = Color(0.055, 0.1, 0.16, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.33, 0.42, 1)
+
+anti_aliasing = false
+[sub_resource type="Theme" id="Theme_menu"]
+default_font = ExtResource("7_pixel_font")
+default_font_size = 8
+Button/colors/font_color = Color(0.86, 0.98, 1, 1)
+Button/colors/font_disabled_color = Color(0.5, 0.64, 0.72, 1)
+Button/colors/font_focus_color = Color(1, 1, 1, 1)
+Button/colors/font_hover_color = Color(1, 1, 1, 1)
+Button/styles/normal = SubResource("Style_button")
+Button/styles/hover = SubResource("Style_hover")
+Button/styles/pressed = SubResource("Style_pressed")
+Button/styles/focus = SubResource("Style_focus")
+Button/styles/disabled = SubResource("Style_disabled")
+Label/colors/font_color = Color(0.78, 0.87, 0.94, 1)
+
+[node name="Victory" type="Control"]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_filter = 1
+theme = SubResource("Theme_menu")
+script = ExtResource("1_script")
+
+[node name="Background" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Fog" type="TextureRect" parent="Background"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_fog")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Forest" type="TextureRect" parent="Background"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_forest")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Mushrooms" type="TextureRect" parent="Background"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("4_mushrooms")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Leaves" type="TextureRect" parent="Background"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("5_leaves")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="DarkVeil" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.025, 0.07, 0.1, 0.32)
+
+[node name="Spores" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Spore01" type="ColorRect" parent="Spores"]
+offset_left = 9.0
+offset_top = 35.0
+offset_right = 11.0
+offset_bottom = 37.0
+mouse_filter = 2
+color = Color(0.4, 0.98, 0.95, 1)
+
+[node name="Spore02" type="ColorRect" parent="Spores"]
+offset_left = 273.0
+offset_top = 71.0
+offset_right = 275.0
+offset_bottom = 73.0
+mouse_filter = 2
+color = Color(0.85, 0.93, 0.52, 1)
+
+[node name="Spore03" type="ColorRect" parent="Spores"]
+offset_left = 7.0
+offset_top = 148.0
+offset_right = 8.0
+offset_bottom = 149.0
+mouse_filter = 2
+color = Color(0.66, 0.94, 1, 1)
+
+[node name="Spore04" type="ColorRect" parent="Spores"]
+offset_left = 279.0
+offset_top = 184.0
+offset_right = 281.0
+offset_bottom = 186.0
+mouse_filter = 2
+color = Color(0.4, 0.98, 0.95, 1)
+
+[node name="Spore05" type="ColorRect" parent="Spores"]
+offset_left = 48.0
+offset_top = 8.0
+offset_right = 49.0
+offset_bottom = 9.0
+mouse_filter = 2
+color = Color(0.95, 0.85, 0.53, 1)
+
+[node name="Spore06" type="ColorRect" parent="Spores"]
+offset_left = 238.0
+offset_top = 203.0
+offset_right = 240.0
+offset_bottom = 205.0
+mouse_filter = 2
+color = Color(0.4, 0.98, 0.95, 1)
+
+[node name="Spore07" type="ColorRect" parent="Spores"]
+offset_left = 11.0
+offset_top = 202.0
+offset_right = 13.0
+offset_bottom = 204.0
+mouse_filter = 2
+color = Color(0.66, 0.94, 1, 1)
+
+[node name="Spore08" type="ColorRect" parent="Spores"]
+offset_left = 278.0
+offset_top = 12.0
+offset_right = 279.0
+offset_bottom = 13.0
+mouse_filter = 2
+color = Color(0.95, 0.85, 0.53, 1)
+
+[node name="SafeMargin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 6
+
+[node name="Center" type="CenterContainer" parent="SafeMargin"]
+layout_mode = 2
+
+[node name="Panel" type="PanelContainer" parent="SafeMargin/Center"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("Style_panel")
+
+[node name="Content" type="VBoxContainer" parent="SafeMargin/Center/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="Header" type="HBoxContainer" parent="SafeMargin/Center/Panel/Content"]
+layout_mode = 2
+theme_override_constants/separation = 5
+alignment = 1
+
+[node name="Mush" type="TextureRect" parent="SafeMargin/Center/Panel/Content/Header"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+mouse_filter = 2
+texture = SubResource("Atlas_mush_victory")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Titles" type="VBoxContainer" parent="SafeMargin/Center/Panel/Content/Header"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Eyebrow" type="Label" parent="SafeMargin/Center/Panel/Content/Header/Titles"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.82, 0.94, 0.63, 1)
+theme_override_font_sizes/font_size = 8
+text = "CHEGAMOS AO CÉU"
+
+[node name="Title" type="Label" parent="SafeMargin/Center/Panel/Content/Header/Titles"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 1, 0.96, 1)
+theme_override_colors/font_shadow_color = Color(0.1, 0.3, 0.42, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 16
+text = "VITÓRIA"
+
+[node name="Subtitle" type="Label" parent="SafeMargin/Center/Panel/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+theme_override_font_sizes/font_size = 8
+text = "Mush encontrou um refúgio entre as nuvens."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Divider" type="HBoxContainer" parent="SafeMargin/Center/Panel/Content"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="Pixel00" type="ColorRect" parent="SafeMargin/Center/Panel/Content/Divider"]
+custom_minimum_size = Vector2(3, 2)
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.85, 0.93, 0.52, 1)
+
+[node name="Pixel01" type="ColorRect" parent="SafeMargin/Center/Panel/Content/Divider"]
+custom_minimum_size = Vector2(3, 2)
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.25, 0.48, 0.6, 1)
+
+[node name="Pixel02" type="ColorRect" parent="SafeMargin/Center/Panel/Content/Divider"]
+custom_minimum_size = Vector2(3, 2)
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.4, 0.98, 0.95, 1)
+
+[node name="Pixel03" type="ColorRect" parent="SafeMargin/Center/Panel/Content/Divider"]
+custom_minimum_size = Vector2(3, 2)
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.85, 0.93, 0.52, 1)
+
+[node name="Pixel04" type="ColorRect" parent="SafeMargin/Center/Panel/Content/Divider"]
+custom_minimum_size = Vector2(3, 2)
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.4, 0.98, 0.95, 1)
+
+[node name="Pixel05" type="ColorRect" parent="SafeMargin/Center/Panel/Content/Divider"]
+custom_minimum_size = Vector2(3, 2)
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.25, 0.48, 0.6, 1)
+
+[node name="Pixel06" type="ColorRect" parent="SafeMargin/Center/Panel/Content/Divider"]
+custom_minimum_size = Vector2(3, 2)
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.85, 0.93, 0.52, 1)
+
+[node name="Pixel07" type="ColorRect" parent="SafeMargin/Center/Panel/Content/Divider"]
+custom_minimum_size = Vector2(3, 2)
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.25, 0.48, 0.6, 1)
+
+[node name="Pixel08" type="ColorRect" parent="SafeMargin/Center/Panel/Content/Divider"]
+custom_minimum_size = Vector2(3, 2)
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.4, 0.98, 0.95, 1)
+
+[node name="Pixel09" type="ColorRect" parent="SafeMargin/Center/Panel/Content/Divider"]
+custom_minimum_size = Vector2(3, 2)
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.85, 0.93, 0.52, 1)
+
+[node name="Pixel10" type="ColorRect" parent="SafeMargin/Center/Panel/Content/Divider"]
+custom_minimum_size = Vector2(3, 2)
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.4, 0.98, 0.95, 1)
+
+[node name="Pixel11" type="ColorRect" parent="SafeMargin/Center/Panel/Content/Divider"]
+custom_minimum_size = Vector2(3, 2)
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.25, 0.48, 0.6, 1)
+
+[node name="Pixel12" type="ColorRect" parent="SafeMargin/Center/Panel/Content/Divider"]
+custom_minimum_size = Vector2(3, 2)
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.85, 0.93, 0.52, 1)
+
+[node name="Pixel13" type="ColorRect" parent="SafeMargin/Center/Panel/Content/Divider"]
+custom_minimum_size = Vector2(3, 2)
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.25, 0.48, 0.6, 1)
+
+[node name="Pixel14" type="ColorRect" parent="SafeMargin/Center/Panel/Content/Divider"]
+custom_minimum_size = Vector2(3, 2)
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.4, 0.98, 0.95, 1)
+
+[node name="Pixel15" type="ColorRect" parent="SafeMargin/Center/Panel/Content/Divider"]
+custom_minimum_size = Vector2(3, 2)
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.85, 0.93, 0.52, 1)
+
+[node name="Pixel16" type="ColorRect" parent="SafeMargin/Center/Panel/Content/Divider"]
+custom_minimum_size = Vector2(3, 2)
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.4, 0.98, 0.95, 1)
+
+[node name="Pixel17" type="ColorRect" parent="SafeMargin/Center/Panel/Content/Divider"]
+custom_minimum_size = Vector2(3, 2)
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.25, 0.48, 0.6, 1)
+
+[node name="Pixel18" type="ColorRect" parent="SafeMargin/Center/Panel/Content/Divider"]
+custom_minimum_size = Vector2(3, 2)
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.85, 0.93, 0.52, 1)
+
+[node name="Stats" type="HBoxContainer" parent="SafeMargin/Center/Panel/Content"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="FallsCard" type="PanelContainer" parent="SafeMargin/Center/Panel/Content/Stats"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("Style_stat")
+
+[node name="Falls" type="Label" parent="SafeMargin/Center/Panel/Content/Stats/FallsCard"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.58, 0.94, 0.99, 1)
+theme_override_font_sizes/font_size = 8
+text = "00  QUEDAS"
+horizontal_alignment = 1
+
+[node name="AlliesCard" type="PanelContainer" parent="SafeMargin/Center/Panel/Content/Stats"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("Style_stat")
+
+[node name="Allies" type="Label" parent="SafeMargin/Center/Panel/Content/Stats/AlliesCard"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.7, 1, 1)
+theme_override_font_sizes/font_size = 8
+text = "0 / 5  ALIADOS"
+horizontal_alignment = 1
+
+[node name="RestartButton" type="Button" parent="SafeMargin/Center/Panel/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+theme_override_font_sizes/font_size = 8
+disabled = true
+text = "RECOMEÇAR DO ZERO"
+
+[node name="Footer" type="Label" parent="SafeMargin/Center/Panel/Content"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.47, 0.62, 0.74, 1)
+theme_override_font_sizes/font_size = 8
+text = "A luz da floresta chegou até aqui."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2

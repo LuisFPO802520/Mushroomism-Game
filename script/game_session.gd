@@ -4,6 +4,7 @@ extends Node
 
 const FIRST_LEVEL: String = "res://scene/map1.tscn"
 const GAME_OVER_SCENE: String = "res://ui/game_over.tscn"
+const VICTORY_SCENE: String = "res://ui/victory.tscn"
 
 var health: int = 5
 var max_health: int = 5
@@ -14,6 +15,7 @@ var _party_max_health: Dictionary = {}
 var current_level: String = ""
 var transitioning: bool = false
 var game_over: Control
+var victory: Control
 
 var _entry_party: Array[String] = []
 var _player: Node2D
@@ -113,7 +115,7 @@ func _on_fell_into_hazard() -> void:
 
 
 func change_level(path: String) -> void:
-	if transitioning or is_instance_valid(game_over):
+	if transitioning or is_instance_valid(game_over) or is_instance_valid(victory):
 		return
 	for ally_health: int in party_health.values():
 		if ally_health <= 0:
@@ -133,7 +135,7 @@ func _change_scene(path: String) -> void:
 
 
 func show_game_over(player: Node2D, reason: String = "") -> void:
-	if player != _player or transitioning or is_instance_valid(game_over):
+	if player != _player or transitioning or is_instance_valid(game_over) or is_instance_valid(victory):
 		return
 	var packed := load(GAME_OVER_SCENE) as PackedScene
 	if packed == null:
@@ -151,8 +153,33 @@ func show_game_over(player: Node2D, reason: String = "") -> void:
 	get_tree().paused = true
 
 
+func show_victory(player: Node2D) -> void:
+	if not is_instance_valid(player) or player != _player or transitioning:
+		return
+	if is_instance_valid(game_over) or is_instance_valid(victory):
+		return
+	if player.has_method("is_dead") and bool(player.call("is_dead")):
+		return
+	for ally_health: int in party_health.values():
+		if ally_health <= 0:
+			return
+	var packed := load(VICTORY_SCENE) as PackedScene
+	if packed == null:
+		return
+	_menu_layer = CanvasLayer.new()
+	_menu_layer.name = "VictoryLayer"
+	_menu_layer.layer = 100
+	_menu_layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	add_child(_menu_layer)
+	victory = packed.instantiate() as Control
+	victory.connect("restart_requested", restart_journey)
+	_menu_layer.add_child(victory)
+	victory.call("setup", total_falls, party_scenes.size())
+	get_tree().paused = true
+
+
 func retry_level() -> void:
-	if transitioning:
+	if transitioning or is_instance_valid(victory):
 		return
 	# Um retry recupera a equipe que entrou nesta fase. Os novos resgates
 	# feitos nela voltam aos seus locais para a tentativa seguinte.
@@ -185,6 +212,7 @@ func _close_game_over() -> void:
 	if is_instance_valid(_menu_layer):
 		_menu_layer.queue_free()
 	game_over = null
+	victory = null
 	_menu_layer = null
 
 

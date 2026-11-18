@@ -330,7 +330,7 @@ sources/6 = SubResource("TileSetAtlasSource_irmvp")
 size = Vector2(21, 170)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jr4ny"]
-size = Vector2(14.5, 19.625)
+size = Vector2(14.5, 83.40625)
 
 [node name="Node2D" type="Node2D" unique_id=667064067]
 
@@ -426,8 +426,11 @@ script = ExtResource("15_8trhu")
 next_level = "map2"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="End" unique_id=1427463121]
-position = Vector2(1651, -7)
+position = Vector2(1651, -47.59375)
 shape = SubResource("RectangleShape2D_jr4ny")
+
+[node name="CharacterBody2D" parent="End" unique_id=886786524 instance=ExtResource("18_d1fk3")]
+position = Vector2(209, -7)
 
 [node name="Fall" type="Area2D" parent="." unique_id=765085956]
 position = Vector2(-1431, 284)
@@ -437,11 +440,11 @@ script = ExtResource("15_8trhu")
 next_level = "map1"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Fall" unique_id=1309728772]
-position = Vector2(2267, -16)
+position = Vector2(2267, 1.40625)
 scale = Vector2(120, 2)
 shape = SubResource("RectangleShape2D_jr4ny")
 
-[node name="Mush" parent="." unique_id=886786524 instance=ExtResource("21_myonx")]
+[node name="Mush" parent="." unique_id=1720766742 instance=ExtResource("21_myonx")]
 position = Vector2(12, 149)
 
 [node name="Camera2D" parent="." unique_id=74381952 instance=ExtResource("16_8ptdc")]
@@ -451,7 +454,7 @@ limit_right = 1742
 limit_bottom = 220
 
 [node name="Moss" parent="." unique_id=829457152 instance=ExtResource("17_8h6eb")]
-position = Vector2(1517, 147)
+position = Vector2(1517, 148)
 
 [node name="enemy2" parent="." unique_id=803674658 instance=ExtResource("18_d1fk3")]
 position = Vector2(592, 133)

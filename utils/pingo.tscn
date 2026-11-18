@@ -1,10 +1,10 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://1g2o4ur4ikni"]
 
-[ext_resource type="Script" path="res://script/ally.gd" id="1_ictat"]
-[ext_resource type="Texture2D" path="res://sprites/personagens_v2/pingo/Ducking (32 x 32).png" id="2_ictat"]
-[ext_resource type="Texture2D" path="res://sprites/personagens_v2/pingo/Idle (32 x 32).png" id="3_iqvgl"]
-[ext_resource type="Texture2D" path="res://sprites/personagens_v2/pingo/Jump (32 x 32).png" id="4_srlxl"]
-[ext_resource type="Texture2D" path="res://sprites/personagens_v2/pingo/Waddling (32 x 32).png" id="5_mdf3i"]
+[ext_resource type="Script" uid="uid://bt10at4fxro05" path="res://script/ally.gd" id="1_ictat"]
+[ext_resource type="Texture2D" uid="uid://h08y1iajqujd" path="res://sprites/personagens_v2/pingo/Ducking (32 x 32).png" id="2_ictat"]
+[ext_resource type="Texture2D" uid="uid://rxf0ev1fo6h3" path="res://sprites/personagens_v2/pingo/Idle (32 x 32).png" id="3_iqvgl"]
+[ext_resource type="Texture2D" uid="uid://bynudaidy50ca" path="res://sprites/personagens_v2/pingo/Jump (32 x 32).png" id="4_srlxl"]
+[ext_resource type="Texture2D" uid="uid://bmr7ghampf6xy" path="res://sprites/personagens_v2/pingo/Waddling (32 x 32).png" id="5_mdf3i"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_sqqda"]
 radius = 11.0

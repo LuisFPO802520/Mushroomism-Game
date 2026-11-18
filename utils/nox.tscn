@@ -1,10 +1,11 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://dtgeovgyd6cfw"]
 
-[ext_resource type="Script" path="res://script/ally.gd" id="1_ictat"]
-[ext_resource type="Texture2D" path="res://sprites/personagens_v2/nox/Ducking (32 x 32).png" id="2_ictat"]
-[ext_resource type="Texture2D" path="res://sprites/personagens_v2/nox/Idle (32 x 32).png" id="3_iqvgl"]
-[ext_resource type="Texture2D" path="res://sprites/personagens_v2/nox/Jump (32 x 32).png" id="4_srlxl"]
-[ext_resource type="Texture2D" path="res://sprites/personagens_v2/nox/Waddling (32 x 32).png" id="5_mdf3i"]
+[ext_resource type="Script" uid="uid://bt10at4fxro05" path="res://script/ally.gd" id="1_ictat"]
+[ext_resource type="Texture2D" uid="uid://diuuy2rf1rkn0" path="res://sprites/personagens_v2/nox/Ducking (32 x 32).png" id="2_ictat"]
+[ext_resource type="Texture2D" uid="uid://1blot6leb8vx" path="res://sprites/personagens_v2/nox/Idle (32 x 32).png" id="3_iqvgl"]
+[ext_resource type="Texture2D" uid="uid://c0yowau74mr2b" path="res://sprites/personagens_v2/nox/Falling (32 x 32).png" id="3_t0qho"]
+[ext_resource type="Texture2D" uid="uid://c8fjq2cmn6lgr" path="res://sprites/personagens_v2/nox/Jump (32 x 32).png" id="4_srlxl"]
+[ext_resource type="Texture2D" uid="uid://ccjtnoof721h8" path="res://sprites/personagens_v2/nox/Waddling (32 x 32).png" id="5_mdf3i"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_sqqda"]
 radius = 11.0
@@ -12,6 +13,10 @@ height = 22.0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_lh3kh"]
 atlas = ExtResource("2_ictat")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_38ctx"]
+atlas = ExtResource("3_t0qho")
 region = Rect2(0, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3kias"]
@@ -70,6 +75,14 @@ animations = [{
 }],
 "loop": 1,
 "name": &"duck",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_38ctx")
+}],
+"loop": 1,
+"name": &"falling",
 "speed": 5.0
 }, {
 "frames": [{
@@ -135,4 +148,4 @@ shape = SubResource("CapsuleShape2D_sqqda")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=559450995]
 position = Vector2(0, -4)
 sprite_frames = SubResource("SpriteFrames_brpcj")
-animation = &"walk"
+animation = &"idle"

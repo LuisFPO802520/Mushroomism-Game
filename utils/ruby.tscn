@@ -1,10 +1,10 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bvfg6mmoeg7kg"]
 
-[ext_resource type="Script" path="res://script/ally.gd" id="1_ictat"]
-[ext_resource type="Texture2D" path="res://sprites/personagens_v2/ruby/Ducking (32 x 32).png" id="2_ictat"]
-[ext_resource type="Texture2D" path="res://sprites/personagens_v2/ruby/Idle (32 x 32).png" id="3_iqvgl"]
-[ext_resource type="Texture2D" path="res://sprites/personagens_v2/ruby/Jump (32 x 32).png" id="4_srlxl"]
-[ext_resource type="Texture2D" path="res://sprites/personagens_v2/ruby/Waddling (32 x 32).png" id="5_mdf3i"]
+[ext_resource type="Script" uid="uid://bt10at4fxro05" path="res://script/ally.gd" id="1_ictat"]
+[ext_resource type="Texture2D" uid="uid://irw4onc6y2nu" path="res://sprites/personagens_v2/ruby/Ducking (32 x 32).png" id="2_ictat"]
+[ext_resource type="Texture2D" uid="uid://k3byws0dtupp" path="res://sprites/personagens_v2/ruby/Idle (32 x 32).png" id="3_iqvgl"]
+[ext_resource type="Texture2D" uid="uid://ddo7cieyulqcw" path="res://sprites/personagens_v2/ruby/Jump (32 x 32).png" id="4_srlxl"]
+[ext_resource type="Texture2D" uid="uid://bf1v1iukj7arg" path="res://sprites/personagens_v2/ruby/Waddling (32 x 32).png" id="5_mdf3i"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_sqqda"]
 radius = 11.0

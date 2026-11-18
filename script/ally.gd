@@ -4,7 +4,6 @@ signal health_changed(current_health: int, maximum_health: int)
 signal damaged(amount: int)
 signal died
 
-## Vazio usa o caminho do prefab como identidade entre os mapas.
 @export var ally_id: StringName = &""
 @export_range(1, 100) var max_health: int = 5
 @export var invulnerability_time: float = 1.0

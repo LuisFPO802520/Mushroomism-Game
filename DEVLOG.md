@@ -9,3 +9,9 @@ Como resolvi: faltava trocar o sprite do personagem no pulo e trocar o layer do 
 O que fiz: os inimigos baterem no personagem e levar dano, e vice versa
 O que travou: o personagem nao fazia as animaçoes corretas e o inimigo nao levava dano
 Como resolvi: alterei o codigo para que ele ficasse de acordo com o o inimigo levasse o dano com o hit do personagem nele
+
+## Aula 11 - 28/10
+
+O que fiz: os mapas com inicio e fim e um fim de jogo
+O que travou: terminava o jogo ao passar o mapa e não ao ganhar
+Como resolvi: fiz com que o apenas o ultimo colision tivesse a condição para ganhar o jogo

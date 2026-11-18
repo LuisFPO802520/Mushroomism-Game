@@ -1,6 +1,8 @@
 extends Area2D
 
 @export var next_level = ""
+## O destino final mostra a tela de vitoria em vez de abrir outro mapa.
+@export var is_victory: bool = false
 ## Marque para novas áreas de água/lava. As áreas antigas chamadas Fall já
 ## são reconhecidas, mantendo o mapa e suas colisões como você os montou.
 @export var is_hazard: bool = false
@@ -25,6 +27,11 @@ func _on_body_entered(body: Node2D) -> void:
 	if not body.is_in_group("player"):
 		return
 	_changing_scene = true
+	if is_victory:
+		var session: Node = get_node_or_null("/root/GameSession")
+		if session != null:
+			session.call_deferred("show_victory", body)
+		return
 	call_deferred("load_next_scene")
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
