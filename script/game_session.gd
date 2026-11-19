@@ -1,4 +1,3 @@
-# Origem: elaborado com ajuda de IA (OpenAI/Codex).
 extends Node
 ## Autoload: guarda vida e aliados enquanto os mapas são trocados.
 

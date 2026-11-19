@@ -454,7 +454,7 @@ limit_right = 1742
 limit_bottom = 220
 
 [node name="Moss" parent="." unique_id=829457152 instance=ExtResource("17_8h6eb")]
-position = Vector2(1517, 148)
+position = Vector2(1514, 149)
 
 [node name="enemy2" parent="." unique_id=803674658 instance=ExtResource("18_d1fk3")]
 position = Vector2(592, 133)

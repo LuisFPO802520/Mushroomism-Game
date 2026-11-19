@@ -1,4 +1,3 @@
-# Origem: elaborado com ajuda de IA (OpenAI/Codex).
 extends Control
 ## Cada cabeca acesa representa um ponto de vida. O contador e ligado ao resgate.
 

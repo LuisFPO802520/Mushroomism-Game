@@ -1,5 +1,3 @@
-# Origem: elaborado com ajuda de IA (OpenAI/Codex).
-# Guarda o caminho horizontal da fila. Altura e pouso pertencem a fisica do aliado.
 extends RefCounted
 
 var spacing: float = 28.0

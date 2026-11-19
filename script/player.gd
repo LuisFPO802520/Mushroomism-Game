@@ -1,4 +1,3 @@
-# Origem: movimento existente adaptado com ajuda de IA (OpenAI/Codex).
 extends CharacterBody2D
 ## Mush: movimento, combate e registro do caminho usado pelos aliados.
 

@@ -198,7 +198,6 @@ func _physics_process(delta: float) -> void:
 	var result: Dictionary = _player.call("get_follow_sample", _slot)
 	if result.is_empty():
 		return
-	# A trilha so escolhe para onde andar. A altura nunca e copiada/teleportada.
 	var target: Vector2 = result["position"]
 	var walking_speed: float = float(_player.get("speed"))
 	var maximum_speed: float = walking_speed * 1.25 if is_on_floor() else walking_speed

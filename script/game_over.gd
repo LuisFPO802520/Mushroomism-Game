@@ -1,4 +1,3 @@
-# Origem: elaborado com ajuda de IA (OpenAI/Codex).
 extends Control
 ## O GameSession mostra esta tela e recebe a escolha pelos sinais abaixo.
 

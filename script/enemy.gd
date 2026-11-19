@@ -1,5 +1,3 @@
-# Origem: elaborado com ajuda de IA (OpenAI/Codex).
-# Esporim: patrulha ao redor do ponto inicial, avista Mush e recebe recuo.
 extends CharacterBody2D
 
 @export var max_health: int = 3
@@ -8,7 +6,6 @@ extends CharacterBody2D
 @export var contact_offset: Vector2 = Vector2.ZERO
 
 @export_category("Patrulha e visao")
-## Extensao total: 400 significa 200 pixels para cada lado do ponto inicial.
 @export var patrol_distance: float = 400.0
 @export var patrol_speed: float = 30.0
 @export var chase_speed: float = 60.0
